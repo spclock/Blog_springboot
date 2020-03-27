@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -57,20 +59,21 @@ public class Controller {
         try {
             authenticationManager.authenticate(token);
             SecurityContextHolder.getContext().setAuthentication(token);
+
             User loginInUser = new User(1, "张三");
+
             return new Result("ok", "登录成功", true, loginInUser);
         } catch (BadCredentialsException e) {
             return new Result("fail", "登录失败", false);
         }
-
     }
 
-    @RequestMapping("/")
-    public User index() {
-//        return "Greetings from Spring Boot!"+name;
-        return userService.getUserById(1);
-//        return null;
-    }
+//    @RequestMapping("/")
+//    public User index() {
+////        return "Greetings from Spring Boot!"+name;
+//        return userService.getUserById(1);
+////        return null;
+//    }
 
     private class Result {
         String status;
