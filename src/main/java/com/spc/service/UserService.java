@@ -8,23 +8,23 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import javax.inject.Inject;
 import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class UserService implements UserDetailsService {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private UserMapper userMapper;
+
 //    private UserMapper userMapper;
-    Map<String, String> userNameAndPassword = new ConcurrentHashMap<>();
+//    Map<String, User> users = new ConcurrentHashMap<>();
 
-    public UserService(BCryptPasswordEncoder bCryptPasswordEncoder) {
+    @Inject
+    public UserService(BCryptPasswordEncoder bCryptPasswordEncoder,UserMapper userMapper) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        save("spc","spc");
-
+        this.userMapper=userMapper;
+//        save("spc", "spc");
     }
 
 //    @Inject
@@ -38,18 +38,25 @@ public class UserService implements UserDetailsService {
 
 
     public void save(String username, String password) {
-        userNameAndPassword.put(username, bCryptPasswordEncoder.encode(password));
+//        users.put(username, bCryptPasswordEncoder.encode(password));
+        userMapper.save(username,bCryptPasswordEncoder.encode(password));
+
+        //这里要注意id是1，一直是1，但数据库中是自增长
+//        users.put(username, new User(1,username, bCryptPasswordEncoder.encode(password)));
     }
 
-    public String getPassword(String username) {
-        return userNameAndPassword.get(username);
+    public String encryptedPassword(String username) {
+        return userMapper.getEncryptedPasswordByUsername(username);
+//        return users.get(username).getEncryptedPassword();
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        if (userNameAndPassword.containsKey(username)) {
-            String password = userNameAndPassword.get(username);
-            return new org.springframework.security.core.userdetails.User(username, password, Collections.emptyList());
+//        if (users.containsKey(username)) {
+        User user = userMapper.getUserByUsername(username);
+        if (user!=null) {
+//            User user = getUserByUsername(username);
+            return new org.springframework.security.core.userdetails.User(username, user.getEncryptedPassword(), Collections.emptyList());
         } else {
             //没对应username，用户不存在
             throw new UsernameNotFoundException(username + "  用户不存在");
@@ -61,5 +68,9 @@ public class UserService implements UserDetailsService {
 //        String password = userNameAndPassword.get(username);
 //        return new org.springframework.security.core.userdetails.User(username, password, Collections.emptyList());
 
+    }
+
+    public User getUserByUsername(String username) {
+        return userMapper.getUserByUsername(username);
     }
 }
