@@ -17,45 +17,27 @@ public class UserService implements UserDetailsService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private UserMapper userMapper;
 
-//    private UserMapper userMapper;
-//    Map<String, User> users = new ConcurrentHashMap<>();
-
     @Inject
     public UserService(BCryptPasswordEncoder bCryptPasswordEncoder,UserMapper userMapper) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userMapper=userMapper;
-//        save("spc", "spc");
     }
 
-//    @Inject
-//    public UserService(UserMapper userMapper) {
-//        this.userMapper = userMapper;
-//    }
 
-//    public User getUserById(Integer id) {
-//        return userMapper.findUserById(id);
-//    }
 
 
     public void save(String username, String password) {
-//        users.put(username, bCryptPasswordEncoder.encode(password));
         userMapper.save(username,bCryptPasswordEncoder.encode(password));
-
-        //这里要注意id是1，一直是1，但数据库中是自增长
-//        users.put(username, new User(1,username, bCryptPasswordEncoder.encode(password)));
     }
 
     public String encryptedPassword(String username) {
         return userMapper.getEncryptedPasswordByUsername(username);
-//        return users.get(username).getEncryptedPassword();
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        if (users.containsKey(username)) {
         User user = userMapper.getUserByUsername(username);
         if (user!=null) {
-//            User user = getUserByUsername(username);
             return new org.springframework.security.core.userdetails.User(username, user.getEncryptedPassword(), Collections.emptyList());
         } else {
             //没对应username，用户不存在

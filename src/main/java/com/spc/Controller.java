@@ -1,27 +1,22 @@
 package com.spc;
 
 import com.spc.entity.User;
-import com.spc.service.OrderService;
 import com.spc.service.UserService;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.inject.Inject;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 public class Controller {
-    //    private UserDetailsService userDetailsService;
     private AuthenticationManager authenticationManager;
     private UserService userService;
 
@@ -32,23 +27,32 @@ public class Controller {
         this.userService = userService;
     }
 
-    @Resource
-    private OrderService orderService;
-
-//    @Inject
-//    public Controller(OrderService orderService, UserService userService) {
-//        this.orderService = orderService;
-//        this.userService = userService;
-//    }
 
     @GetMapping("/auth")
-    public Object authRegister() {
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+    public Result auth() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (!name.contains("anonymousUser")) {
-            return new Result("ok", "cookie验证了", true, userService.getUserByUsername(name));
+        User user = userService.getUserByUsername(authentication == null ? null : authentication.getName());
+
+        if (user != null) {
+            return new Result("ok", null, true, user);
         } else {
             return new Result("ok", "用户没登录", false);
+        }
+
+    }
+
+    @GetMapping("/auth/logout")
+    public Result logout() {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userService.getUserByUsername(username);
+        if (user != null) {
+            SecurityContextHolder.clearContext();
+            return new Result("ok", "注销成功", false);
+        } else {
+            return new Result("fail", "用户尚未登录", false);
+
         }
 
     }
@@ -67,35 +71,45 @@ public class Controller {
         } catch (UsernameNotFoundException e) {
             return new Result("fail", "用户不存在", false);
         }
+
         final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
         try {
             authenticationManager.authenticate(token);
             SecurityContextHolder.getContext().setAuthentication(token);
-
-//            User loginInUser = new User(1, "张三");
 
             return new Result("ok", "登录成功", true, userService.getUserByUsername(username));
         } catch (BadCredentialsException e) {
             return new Result("fail", "登录失败", false);
         }
     }
+
+    //注册有个地方要补全，你register后要setContent，不然auth不出状态
     @PostMapping("/auth/register")
-    public Result register(@RequestBody Map<String, Object> user){
+    public Result register(@RequestBody Map<String, Object> user) {
         String username = user.get("username").toString();
         String password = user.get("password").toString();
-        try{
-            userService.save(username,password);
-            User registeredUser = userService.getUserByUsername(username);
-            return new Result("ok","注册成功",true,registeredUser);
+        if (username == null || password == null) {
+            return new Result("fail", "username or password is null", false);
+        }
 
-        }catch (Exception e) {
-            return new Result("false","错误原因",false);
+        //需要换成正则表达式
+        if (username.length() < 1 || username.length() > 15) {
+            return new Result("fail", "invalid username", false);
+        }
+        if (password.length() < 6 || password.length() > 16) {
+            return new Result("fail", "invalid password", false);
+        }
+        try {
+            userService.save(username, password);
+            User registeredUser = userService.getUserByUsername(username);
+            return new Result("ok", "注册成功", true);
+        } catch (DuplicateKeyException e) {
+            return new Result("fail", "用户存在", false);
         }
     }
 
     @RequestMapping("/")
     public User index() {
-//        return "Greetings from Spring Boot!"+name;
         return userService.getUserByUsername("spc");
     }
 
