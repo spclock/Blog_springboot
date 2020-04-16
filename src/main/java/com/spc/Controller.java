@@ -77,7 +77,7 @@ public class Controller {
             authenticationManager.authenticate(token);
             SecurityContextHolder.getContext().setAuthentication(token);
 
-            return new Result("ok", "登录成功", true, userService.getUserByUsername(username));
+            return new Result("ok", "登录成功;", true, userService.getUserByUsername(username));
         } catch (BadCredentialsException e) {
             return new Result("fail", "登录失败", false);
         }
