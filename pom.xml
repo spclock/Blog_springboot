@@ -187,7 +187,7 @@
                         <configuration>
                             <user>root</user>
                             <password>root</password>
-                            <url>jdbc:mysql://192.168.99.100/blog?useSSL=false &amp; allowPublicKeyRetrieval=true</url>
+                            <url>jdbc:mysql://192.168.99.100:3307/blog?useSSL=false &amp; allowPublicKeyRetrieval=true</url>
                         </configuration>
                     </execution>
                 </executions>
