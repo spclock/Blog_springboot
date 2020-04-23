@@ -205,8 +205,8 @@
                             <password>root</password>
                             <!--                    本地-->
 <!--                    <url>jdbc:mysql://192.168.99.100/blog?useSSL=false &amp; allowPublicKeyRetrieval=true</url>-->
-                            <!--                    ci-->
-                            <url>jdbc:mysql://localhost/blog?useSSL=false &amp; allowPublicKeyRetrieval=true</url>
+                            <!--                    ci test-->
+                            <url>jdbc:mysql://localhost:3307/blog?useSSL=false &amp; allowPublicKeyRetrieval=true</url>
                         </configuration>
                     </execution>
                 </executions>
