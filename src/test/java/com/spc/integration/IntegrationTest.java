@@ -4,6 +4,7 @@ import com.spc.Application;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
+import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,10 +27,12 @@ public class IntegrationTest {
     @Test
     public void integrationTest() throws IOException {
         String testport = environment.getProperty("local.server.port");
+//        fluent-ch api
         int statusCode = Request.Get("http://localhost:" + testport + "/auth")
                 .execute().returnResponse().getStatusLine().getStatusCode();
-//        Assertions.assertTrue(Request.Get("http://localhost:" + testport + "/auth")
-//                .execute().returnContent().toString().contains("用户没登录"));
+        //contentType isnt utf-8 ,how set utf-8
+        Assertions.assertTrue(Request.Get("http://localhost:" + testport + "/auth")
+                .execute().returnContent().toString().contains("false"));
         Assertions.assertEquals(200, statusCode);
     }
 }
