@@ -4,12 +4,21 @@ import java.time.Instant;
 
 public class Blog {
     private Integer id;
+    private Integer userId;
     private String title;
     private String description;
     private String content;
     private User user;
     private Instant createdAt;
     private Instant updatedAt;
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public Integer getId() {
         return id;

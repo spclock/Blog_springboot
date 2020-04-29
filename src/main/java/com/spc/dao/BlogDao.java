@@ -9,4 +9,8 @@ public class BlogDao {
     public List<Blog> getBlogs(Integer page, Integer pagesize, Integer userId) {
         return null;
     }
+
+    public int count(Integer userId) {
+        return 0;
+    }
 }

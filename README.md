@@ -47,7 +47,7 @@ git clone https://github.com/NervousOrange/Multiplayer-Online-Blog-Platform.git
 * 如果需要持久化数据需要配置 -v 磁盘文件映射
 
 ```shell
-docker run --name blog-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root MYSQL_DATABASE=blog -d mysql:8.0
+docker run --name blog-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=blog -d mysql:8.0
 ```
 
 使用 IDEA 打开项目，刷新 Maven，再使用开源数据库迁移工具 Flyway 完成自动建表工作：
