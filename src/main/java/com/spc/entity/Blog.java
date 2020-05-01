@@ -1,9 +1,12 @@
 package com.spc.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.Instant;
 
 public class Blog {
     private Integer id;
+    @JsonIgnore
     private Integer userId;
     private String title;
     private String description;

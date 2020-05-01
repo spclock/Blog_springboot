@@ -1,6 +1,7 @@
 package com.spc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spc.controller.LoginController;
 import com.spc.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
-class ControllerTest {
+class LoginControllerTest {
     private MockMvc mvc;
     @Mock
     private AuthenticationManager authenticationManager;
@@ -39,7 +40,7 @@ class ControllerTest {
 
     @BeforeEach
     void setUp() {
-        mvc = MockMvcBuilders.standaloneSetup(new Controller(authenticationManager, userService))
+        mvc = MockMvcBuilders.standaloneSetup(new LoginController(authenticationManager, userService))
                 .addFilter((request, response, chain) -> {
                     response.setCharacterEncoding("UTF-8"); // 默认是ISO-8859-1
                     chain.doFilter(request, response);

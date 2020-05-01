@@ -4,6 +4,16 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.mybatis.example.BlogMapper">
     <select id="selectBlog" resultType="com.spc.entity.Blog">
-        select * from blog where user_id = #{userId}
+        select * from blog
+        <if test="user_id != null" >
+            where user_id=#{user_id}
+        </if>
+        limit #{offset},#{pageSize};
+    </select>
+    <select id="countBlog" resultType="int">
+        select count(*) from blog
+        <if test="user_id != null" >
+            where user_id=#{user_id}
+        </if>
     </select>
 </mapper>

@@ -1,4 +1,4 @@
-package com.spc;
+package com.spc.controller;
 
 import com.spc.entity.LoginResult;
 import com.spc.entity.Result;
@@ -18,13 +18,13 @@ import javax.inject.Inject;
 import java.util.Map;
 
 @RestController
-public class Controller {
+public class LoginController {
     private AuthenticationManager authenticationManager;
     private UserService userService;
 
     @Inject
-    public Controller(AuthenticationManager authenticationManager,
-                      UserService userService) {
+    public LoginController(AuthenticationManager authenticationManager,
+                           UserService userService) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
     }
@@ -99,7 +99,7 @@ public class Controller {
             return new LoginResult("fail", "invalid username", false);
         }
         if (password.length() < 6 || password.length() > 16) {
-            return new LoginResult("fail", "invalid password", false);
+            return new LoginResult("fail", "invalid password, you need create 6-16", false);
         }
         try {
             userService.save(username, password);

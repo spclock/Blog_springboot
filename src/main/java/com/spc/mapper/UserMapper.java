@@ -11,7 +11,7 @@ public interface UserMapper {
 
 
     @Select("SELECT * FROM user WHERE id = #{id}")
-    User findUserById(@Param("id") Integer id);
+    User getUserById(@Param("id") Integer id);
 
 
     @Select("SELECT * FROM user WHERE id = #{id}")
@@ -29,4 +29,6 @@ public interface UserMapper {
 
     @Select("SELECT * from user where username = #{username}")
     User getUserByUsername(@Param("username") String username);
+
+
 }

@@ -55,4 +55,9 @@ public class UserService implements UserDetailsService {
     public User getUserByUsername(String username) {
         return userMapper.getUserByUsername(username);
     }
+
+
+    public User getUserById(Integer userId) {
+        return userMapper.getUserById(userId);
+    }
 }
